@@ -93,18 +93,28 @@ This will install all dependencies listed in package.json, including:
 . JSON Web Token (JWT)
 and other necessary packages
 
-##2. (env)  Set Up Environment Variables
+## 2. 🔐 Set Up Environment Variables
 
-. MongoDB connection string
- DATABASE_URL=mongodb+srv://your-mongo-db-url
+1. Copy the example environment file to a new `.env.local` file:
 
-.JWT secret key
+```bash
+cp .env.example .env.local
+
+2. Open .env.local and replace the placeholder values with your actual credentials:
+
+# MongoDB connection string
+MONGO_URL=mongodb+srv://your-mongo-db-url
+
+# JWT secret key
 JWT_SECRET=your_jwt_secret
 
-. Stripe API keys
-STRIPE_SECRET_KEY=sk_test_...
-STRIPE_WEBHOOK_SECRET=whsec_...
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+# Stripe API keys
+PAY_SECRET=sk_test_your_stripe_secret_key
+STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_publishable_key
+
+# Base URL for local development
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
 
 ##3. Run the Development Server
    Start the development server using:
