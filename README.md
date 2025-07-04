@@ -1,4 +1,5 @@
  Project: ECommerce
+
 This project demonstrates a complete authentication and subscription system using modern tools like JWT, Stripe, MongoDB, and role-based access control, built in a secure and scalable manner.
 
 1. 🔐 JWT (JSON Web Token)
@@ -72,3 +73,41 @@ MongoDB stores user accounts, roles, subscriptions, and feature access.
 Document-based structure is used for efficient querying and scalability.
 
 Token data and plan metadata are also saved here.
+
+
+## 🔧 Setup Instructions
+
+Follow the steps below to run the project locally:
+
+## 1. Install Dependencies
+
+Install all required packages using npm:
+
+```bash
+npm install
+
+This will install all dependencies listed in package.json, including:
+. Next.js
+. Stripe
+. Mongoose
+. JSON Web Token (JWT)
+and other necessary packages
+
+##2. (env)  Set Up Environment Variables
+
+. MongoDB connection string
+ DATABASE_URL=mongodb+srv://your-mongo-db-url
+
+.JWT secret key
+JWT_SECRET=your_jwt_secret
+
+. Stripe API keys
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+
+##3. Run the Development Server
+   Start the development server using:
+  npm run dev
+
+
