@@ -1,74 +1,36 @@
-🛍️ Project: ECommerce
-This project demonstrates a complete authentication and subscription system using modern tools like JWT, Stripe, MongoDB, and role-based access control, built in a secure and scalable manner.
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-1. 🔐 JWT (JSON Web Token)
-Used for securely authenticating users.
+## Getting Started
 
-After login, a JWT is generated containing the user's ID, role, and expiration time.
+First, run the development server:
 
-The token is typically stored in cookies or headers.
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-2. ✅ Token Validation
-On every API request or protected route, the token is verified.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-Ensures the token is valid, not expired, and has not been tampered with.
+You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
-Decoded token data (e.g., user ID and role) is used for access control.
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-3. 🛡️ Middleware Protection
-Middleware checks for a valid JWT before granting access to protected routes.
+## Learn More
 
-Unauthenticated users are redirected to the login page.
+To learn more about Next.js, take a look at the following resources:
 
-Role-based restrictions are enforced (e.g., only admins can access certain routes).
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-4. 👥 Role-Based Permissions
-Users are assigned roles: admin, staff, or user.
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-Access and permissions are granted based on roles:
+## Deploy on Vercel
 
-Admin: Full access (create, update, delete)
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Staff: Limited access (e.g., view and update)
-
-User: View-only or restricted feature access
-
-5. 💳 Stripe Payment Integration
-Stripe handles secure payments and subscriptions.
-
-Users can choose from plans (Free, Pro, Premium).
-
-On plan selection, users are redirected to Stripe Checkout for payment.
-
-6. 📆 Stripe Subscription System
-Supports recurring billing (monthly or yearly).
-
-Each plan is linked to a Stripe Price ID.
-
-Stripe manages the billing lifecycle and subscription status.
-
-7. 📩 Webhook Handling
-Stripe sends webhook events for actions like successful payments or cancellations.
-
-The backend listens for these events, verifies them, and updates MongoDB accordingly (e.g., user plan, subscription status).
-
-8. 🧾 Plans Management
-Plans represent different access tiers: Free, Pro, and Premium.
-
-Each plan is configured in Stripe as a Product with metadata (feature access).
-
-On subscription, metadata is saved in MongoDB and used to determine access control.
-
-9. 🚀 Feature Access Based on Plan
-The user's active plan determines which features they can access.
-
-On login, the frontend fetches the enabled features from the database.
-
-The backend enforces feature-level access control using the saved metadata.
-
-🗃️ Database: MongoDB
-MongoDB stores user accounts, roles, subscriptions, and feature access.
-
-Document-based structure is used for efficient querying and scalability.
-
-Token data and plan metadata are also saved here.
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
