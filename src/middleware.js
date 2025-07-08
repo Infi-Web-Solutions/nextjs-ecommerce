@@ -5,9 +5,12 @@ export async function middleware(request) {
   const token = request.cookies.get("token")?.value;
   const pathname = request.nextUrl.pathname;
 
+  console.log("Middleware token:", token);
+
   const redirectTo = (path) => NextResponse.redirect(new URL(path, request.url));
 
   if (!token) {
+    console.log("No token found, redirecting...");
     if (pathname.startsWith("/admin")) return redirectTo("/admin/login");
     if (pathname.startsWith("/auth")) return redirectTo("/auth/login");
     if (pathname.startsWith("/user")) return redirectTo("/auth/login");

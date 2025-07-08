@@ -1,22 +1,24 @@
-import { getServerSession } from "next-auth";
+// /app/api/auth/set-token/route.js
+import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
-import { authOptions } from "../[...nextauth]/route";
 
 export async function GET(request) {
-  const session = await getServerSession(authOptions);
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
 
-  if (!session?.customToken) {
+  console.log("Retrieved session token:", token);
+
+  if (!token?.customToken) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
-  const response = NextResponse.redirect(new URL("/dashboard", request.url)); // ✅ protected route
+  const response = NextResponse.redirect(new URL("/user/products", request.url));
 
-  // ✅ Set secure token cookie
-  response.cookies.set("token", session.customToken, {
+  response.cookies.set("token", token.customToken, {
     httpOnly: true,
     secure: true,
+    sameSite: "lax", // important for local dev
     path: "/",
-    maxAge: 60 * 60 * 24, // 1 day
+    maxAge: 60 * 60 * 24,
   });
 
   return response;

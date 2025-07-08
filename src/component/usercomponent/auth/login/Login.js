@@ -12,8 +12,16 @@ export default function Login() {
 
 
   const handleGoogleLogin = async () => {
-    const res = await signIn("google", { callbackUrl: "/auth/callback" });
-  }; 
+    await signIn("google", { callbackUrl: "/auth/callback" });
+  };
+
+  const handleFacebookLogin = async () => {
+    await signIn("facebook", { callbackUrl: "/api/auth/set-token" });
+  };
+  const handleGitHubLogin = async () => {
+  await signIn("github", { callbackUrl: "/api/auth/set-token" });
+};
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,45 +29,45 @@ export default function Login() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(form),
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      await Swal.fire({
-        icon: "success",
-        title: "Login Successful",
-        text: `Welcome!`,
-        timer: 1500,
-        showConfirmButton: false,
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
       });
 
-      router.push("/"); 
-    } else {
+      const data = await res.json();
+
+      if (res.ok) {
+        await Swal.fire({
+          icon: "success",
+          title: "Login Successful",
+          text: `Welcome!`,
+          timer: 1500,
+          showConfirmButton: false,
+        });
+
+        router.push("/");
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Login Failed",
+          text: data.message || "Invalid credentials",
+        });
+      }
+    } catch (error) {
+      console.error("Login error:", error);
       Swal.fire({
         icon: "error",
-        title: "Login Failed",
-        text: data.message || "Invalid credentials",
+        title: "Oops...",
+        text: "Something went wrong!",
       });
     }
-  } catch (error) {
-    console.error("Login error:", error);
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: "Something went wrong!",
-    });
-  }
-};
+  };
 
 
   return (
@@ -108,8 +116,17 @@ export default function Login() {
               </Link>
             </form>
             <button type="button" className="btn btn-danger w-100" onClick={handleGoogleLogin}>
-  Continue with Google
+              Continue with Google
+            </button>
+
+            <button type="button" className="btn btn-primary w-100 mt-2" onClick={handleFacebookLogin}>
+              Continue with Facebook
+            </button>
+            <button type="button" className="btn btn-dark w-100 mt-2" onClick={handleGitHubLogin}>
+  Continue with GitHub
 </button>
+
+
           </div>
         </div>
       </div>
