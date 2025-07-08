@@ -5,6 +5,7 @@ import Footer from "../component/usercomponent/footer/Footer";
 // src/app/layout.js or layout.jsx
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LayoutWrapper from "../component/LayoutWrapper"
+import SessionWrapper from "./SessionWrapper";
 
 
 // const geistSans = Geist({
@@ -33,7 +34,9 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
+      <SessionWrapper>
         <LayoutWrapper>{children}</LayoutWrapper>
+        </SessionWrapper>
       </body>
     </html>
   );

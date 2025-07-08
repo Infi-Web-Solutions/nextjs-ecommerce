@@ -17,23 +17,18 @@ export async function middleware(request) {
   try {
     const secret = new TextEncoder().encode(process.env.JWT_SECRET);
     const { payload } = await jwtVerify(token, secret);
+
     const roleId = String(payload.roleId);
 
     const requestHeaders = new Headers(request.headers);
     requestHeaders.set("x-user-id", payload.userId);
     requestHeaders.set("x-role-id", roleId);
 
-    // Allow only roleId 1 or 2 to access /admin
     if (pathname.startsWith("/admin") && !["1", "2"].includes(roleId)) {
       return redirectTo("/unauthorized");
     }
 
-    return NextResponse.next({
-      request: {
-        headers: requestHeaders,
-      },
-    });
-
+    return NextResponse.next({ request: { headers: requestHeaders } });
   } catch (err) {
     console.error("JWT verify failed:", err.message);
     return redirectTo("/auth/login");

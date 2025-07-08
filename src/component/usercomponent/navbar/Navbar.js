@@ -9,31 +9,31 @@ export default function Navbar() {
   const router = useRouter();
   const [features, setFeatures] = useState([]);
 
-  useEffect(() => {
-  async function fetchPlan() {
-    try {
-      const userId = localStorage.getItem("userId");
-      console.log("userId from localStorage:", userId); 
+//   useEffect(() => {
+//   async function fetchPlan() {
+//     try {
+//       const userId = localStorage.getItem("userId");
+//       console.log("userId from localStorage:", userId); 
 
-      const res = await fetch("/api/plans", {
-        headers: {
-          "user-id": userId,
-        },
-      });
+//       const res = await fetch("/api/plans", {
+//         headers: {
+//           "user-id": userId,
+//         },
+//       });
 
-      const result = await res.json();
-      if (result.success) {
-        setFeatures(result.data?.features || []);
-      } else {
-        console.error("API Error:", result.error);
-      }
-    } catch (err) {
-      console.error("Failed to fetch plan:", err);
-    }
-  }
+//       const result = await res.json();
+//       if (result.success) {
+//         setFeatures(result.data?.features || []);
+//       } else {
+//         console.error("API Error:", result.error);
+//       }
+//     } catch (err) {
+//       console.error("Failed to fetch plan:", err);
+//     }
+//   }
 
-  fetchPlan();
-}, []);
+//   fetchPlan();
+// }, []);
 
 
   function hasFeature(name) {

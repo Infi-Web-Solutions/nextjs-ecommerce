@@ -22,6 +22,7 @@
     "micro": "^10.0.1",
     "mongoose": "^8.16.0",
     "next": "15.3.4",
+    "next-auth": "^4.24.11",
     "pdfmake": "^0.2.20",
     "react": "^19.0.0",
     "react-data-table-component": "^7.7.0",

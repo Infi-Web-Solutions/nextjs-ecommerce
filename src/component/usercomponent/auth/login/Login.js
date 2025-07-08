@@ -1,6 +1,6 @@
 "use client";
 import Swal from "sweetalert2";
-
+import { signIn } from "next-auth/react";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -9,6 +9,11 @@ import Link from "next/link";
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const router = useRouter();
+
+
+  const handleGoogleLogin = async () => {
+    const res = await signIn("google", { callbackUrl: "/auth/callback" });
+  }; 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -102,6 +107,9 @@ export default function Login() {
                 Don’t have an account? Register
               </Link>
             </form>
+            <button type="button" className="btn btn-danger w-100" onClick={handleGoogleLogin}>
+  Continue with Google
+</button>
           </div>
         </div>
       </div>
