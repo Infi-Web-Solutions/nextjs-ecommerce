@@ -6,8 +6,7 @@ import Translation from "@/models/Translation";
 import enJson from "../../../../lib/dictionary/en.json";
 import frJson from "../../../../lib/dictionary/fr.json";
 import deJson from "../../../../lib/dictionary/de.json";
-import jaJson from "../../../../lib/dictionary/ja.json";
-import hiJson from "../../../../lib/dictionary/hi.json";
+
 
 // Helper to flatten nested JSON like { navbar: { home: "Home" } } => { "navbar.home": "Home" }
 function flatten(obj, parentKey = "", sep = ".") {

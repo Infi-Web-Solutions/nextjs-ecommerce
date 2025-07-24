@@ -4,7 +4,7 @@ import fs from 'fs/promises';
 import fetch from 'node-fetch';
 import path from 'path';
 import { fileURLToPath } from 'url';
-// import { translateText } from "@/lib/translate";
+import { translateText } from "@/lib/translate";
 
 // Fix __dirname for ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -48,12 +48,12 @@ function unflatten(data) {
 }
 
 // ✅ Call MyMemory API
-async function translateText(text, toLang, fromLang = 'en') {
-  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${fromLang}|${toLang}`;
-  const res = await fetch(url);
-  const data = await res.json();
-  return data.responseData?.translatedText || text;
-}
+// async function translateText(text, toLang, fromLang = 'en') {
+//   const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${fromLang}|${toLang}`;
+//   const res = await fetch(url);
+//   const data = await res.json();
+//   return data.responseData?.translatedText || text;
+// }
 
 // ✅ MAIN: Auto-translate and save
 async function autoTranslate() {
