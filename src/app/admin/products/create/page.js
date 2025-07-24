@@ -20,10 +20,15 @@ export default function CreateProductPage() {
 
   const handleCreate = async (form) => {
     const formData = new FormData();
+    console.log("Form data before submission:", form);
+    formData.append("nameEn", form.name.en || form.name); // ✅ just string
+  formData.append("descEn", form.description.en || form.description);
 
-    for (let key in form) {
-      if (form[key]) formData.append(key, form[key]);
-    }
+  if (form.price) formData.append("price", form.price);
+  if (form.stock) formData.append("stock", form.stock);
+  if (form.category) formData.append("category", form.category);
+  if (form.image) formData.append("image", form.image);
+
 
     try {
       const res = await fetch("/api/products", {
@@ -34,6 +39,7 @@ export default function CreateProductPage() {
       const result = await res.json();
 
       if (result.success) {
+        console.log("Product created:", result.data);
         alert("Product created successfully!");
         router.push("/admin/products");
       } else {

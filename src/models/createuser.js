@@ -23,7 +23,12 @@ const userSchema = new mongoose.Schema(
 
         roleid:{
              type: Number,
-        }
+        },
+        organizationId: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "Organization"
+                },
+        
 
     },
     {

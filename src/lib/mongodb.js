@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 
 const connecToDatabase = async  () =>{
-  
+  mongoose.set("strictPopulate", false);
   try{
          await mongoose.connect(process.env.Mongourl);
          console.log("connect to maongo db")

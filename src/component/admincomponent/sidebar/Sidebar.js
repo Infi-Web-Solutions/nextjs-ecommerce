@@ -3,6 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import {
+  FaTachometerAlt,
+  FaBoxOpen,
+  FaPlusCircle,
+  FaClipboardList,
+  FaUserPlus,
+  FaChevronDown,
+  FaChevronUp,
+} from "react-icons/fa";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -13,9 +22,9 @@ export default function Sidebar() {
   const isActive = (href) => pathname === href;
 
   useEffect(() => {
-    setMounted(true); 
+    setMounted(true);
 
- 
+
     fetch("/api/userpermission")
       .then((res) => res.json())
       .then((data) => {
@@ -23,14 +32,18 @@ export default function Sidebar() {
       });
   }, []);
 
-  
+
   if (!mounted) return null;
 
   return (
     <div className="sidebar">
       <nav>
         <Link href="/admin" className={isActive("/admin") ? "active" : ""}>
-          Dashboard
+
+          <div className="d-flex align-items-center gap-2">
+            <FaTachometerAlt />
+            <span>Dashboard</span>
+          </div>
         </Link>
 
         {/* Product Manager with dropdown toggle */}
@@ -41,7 +54,12 @@ export default function Sidebar() {
               onClick={() => setShowDropdown(!showDropdown)}
               style={{ cursor: "pointer", display: "block", marginBottom: "5px", padding: "10px" }}
             >
-              Product Manager {showDropdown ? "▲" : "▼"}
+
+
+              <div className="d-flex align-items-center gap-2">
+                <FaBoxOpen />
+                <span>Product Manager {showDropdown ? "▲" : "▼"}</span>
+              </div>
             </span>
 
             {showDropdown && (
@@ -51,7 +69,12 @@ export default function Sidebar() {
                     href="/admin/products"
                     className={isActive("/admin/products") ? "active" : ""}
                   >
-                    Product List
+
+                    <div className="d-flex align-items-center gap-2">
+                      <FaClipboardList />
+                      <span>Product List</span>
+                    </div>
+
                   </Link>
                 )}
 
@@ -60,7 +83,11 @@ export default function Sidebar() {
                     href="/admin/products/create"
                     className={isActive("/admin/products/create") ? "active" : ""}
                   >
-                    Create Product
+                    <div className="d-flex align-items-center gap-2">
+                      <FaPlusCircle />
+                      <span>Create Product</span>
+                    </div>
+
                   </Link>
                 )}
               </div>
@@ -70,18 +97,31 @@ export default function Sidebar() {
 
         {permissions.includes("order_view") && (
           <Link href="/admin/orders" className={isActive("/admin/orders") ? "active" : ""}>
-            Order Manager
+            <FaClipboardList /> Order Manager
           </Link>
         )}
 
         {permissions.includes("createuser_viewcreateuser") && (
           <Link
             href="/admin/superadmin/users"
-            className={isActive("/admin/superadmin/users") ? "active" : ""}
+            className={`${isActive("/admin/superadmin/users") ? "active" : ""}`}
           >
-            Create User
+            <div className="d-flex align-items-center gap-2">
+              <FaUserPlus />
+              <span>Create User</span>
+            </div>
           </Link>
+
         )}
+        
+  <Link href="/admin/appusers" className={isActive("/admin/appusers") ? "active" : ""}>
+    <div className="d-flex align-items-center gap-2">
+      <FaTachometerAlt />
+      <span>App Users</span>
+    </div>
+  </Link>
+
+
       </nav>
     </div>
   );

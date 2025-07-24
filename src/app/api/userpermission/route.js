@@ -10,7 +10,7 @@ export async function GET(req) {
         if (!token) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
-
+         console.log("Token from cookies:", token);
         const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.JWT_SECRET));
         const roleId = payload.roleId;
 

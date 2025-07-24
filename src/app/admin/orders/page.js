@@ -34,6 +34,7 @@ export default function AdminOrderList() {
     async function fetchOrders() {
       const res = await fetch("/api/orders");
       const data = await res.json();
+      console.log("Fetched orders:", data);
       if (data.success) setOrders(data.data);
     }
     fetchOrders();

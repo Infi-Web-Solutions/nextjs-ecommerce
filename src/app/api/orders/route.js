@@ -10,7 +10,7 @@ export async function POST(req) {
   try {
     await connecToDatabase();
 
-    const user = await getUserFromToken(req);
+    const user = await getUserFromToken();
     if (!user) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
@@ -29,7 +29,9 @@ export async function POST(req) {
       paymentIntentId,
       paymentStatus: "paid",
       orderStatus: "processing",
+      organizationId: user.organizationId,
     });
+    
     await order.save();
 
     return NextResponse.json({ success: true, message: "Order saved", order });
@@ -41,8 +43,7 @@ export async function POST(req) {
 
 export async function GET(req) {
   try {
-    const token = req.cookies.get("token")?.value;
-
+    const user = await getUserFromToken();
     if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }

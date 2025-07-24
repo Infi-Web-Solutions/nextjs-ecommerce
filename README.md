@@ -1,123 +1,164 @@
- Project: ECommerce
+🛒 ECommerce SaaS Platform
+    A modern multi-tenant, multilingual SaaS eCommerce application built using Next.js, MongoDB, JWT, Stripe, and NextAuth. This project supports subdomain-based B2B multi-tenancy, role-based access control, dynamic language switching, and automated product translation using MyMemory Translation API.
 
-This project demonstrates a complete authentication and subscription system using modern tools like JWT, Stripe, MongoDB, and role-based access control, built in a secure and scalable manner.
+🚀 Key Features:
+🔐 JWT Authentication:
+    Secure login system using custom JWT tokens.
+    JWT contains user ID, role, organization ID, and expiration.
+    Stored securely in cookies for each user session.
+    Token contains:
+    user ID
+    role
+    organization ID
+    Stored in secure HttpOnly cookies
 
-1. 🔐 JWT (JSON Web Token)
-Used for securely authenticating users.
+🧠 Role-Based Access Control (RBAC)
+    Three user roles: admin, staff, and user.
+    Access managed through permissions:
+    Admin: Full CRUD rights.
+    Staff: Limited rights (e.g., view/manage products).
+    User: View-only access to allowed resources.
 
-After login, a JWT is generated containing the user's ID, role, and expiration time.
+🏢 B2B Multi-Tenant System (Organization-Based) 
+    Each organization (tenant) operates on a virtual subdomain (e.g., org1.myapp.com, org2.myapp.com).
+    Data such as products, users, and settings are isolated by organizationId.
+    Middleware ensures that all access is scoped to the current organization.
+    Admins can only manage data within their organization. 
 
-The token is typically stored in cookies or headers.
+📨 User Invitation System via SMTP
+   Admins can invite users (admins or staff) to join the platform by email.
+   Invitation links are sent via SMTP mail server.
+   Invitees can register, set password and name, and are then onboarded with the role assigned in the invite.
+   Secure registration flow for invited users only.
 
-2. ✅ Token Validation
-On every API request or protected route, the token is verified.
+📦 Product Management
+   Products are stored with multilingual support using translation objects.
+   Each organization manages its own product inventory.
+   Products can be created, updated, and deleted by authorized roles (admin/staff).
 
-Ensures the token is valid, not expired, and has not been tampered with.
+💳 Stripe Subscription & Payments
+   Integrated Stripe Checkout for secure payments.
+   Multiple plans (Free, Pro, Premium) with recurring billing options.
+   Stripe metadata maps features to each plan.
+   Webhook handlers update MongoDB with subscription lifecycle events (active, cancelled, etc.).
 
-Decoded token data (e.g., user ID and role) is used for access control.
-
-3. 🛡️ Middleware Protection
-Middleware checks for a valid JWT before granting access to protected routes.
-
-Unauthenticated users are redirected to the login page.
-
-Role-based restrictions are enforced (e.g., only admins can access certain routes).
-
-4. 👥 Role-Based Permissions
-Users are assigned roles: admin, staff, or user.
-
-Access and permissions are granted based on roles:
-
-Admin: Full access (create, update, delete)
-
-Staff: Limited access (e.g., view and update)
-
-User: View-only or restricted feature access
-
-5. 💳 Stripe Payment Integration
-Stripe handles secure payments and subscriptions.
-
-Users can choose from plans (Free, Pro, Premium).
-
-On plan selection, users are redirected to Stripe Checkout for payment.
-
-6. 📆 Stripe Subscription System
-Supports recurring billing (monthly or yearly).
-
-Each plan is linked to a Stripe Price ID.
-
-Stripe manages the billing lifecycle and subscription status.
-
-7. 📩 Webhook Handling
-Stripe sends webhook events for actions like successful payments or cancellations.
-
-The backend listens for these events, verifies them, and updates MongoDB accordingly (e.g., user plan, subscription status).
-
-8. 🧾 Plans Management
-Plans represent different access tiers: Free, Pro, and Premium.
-
-Each plan is configured in Stripe as a Product with metadata (feature access).
-
-On subscription, metadata is saved in MongoDB and used to determine access control.
-
-9. 🚀 Feature Access Based on Plan
-The user's active plan determines which features they can access.
-
-On login, the frontend fetches the enabled features from the database.
-
-The backend enforces feature-level access control using the saved metadata.
-
-🗃️ Database: MongoDB
-MongoDB stores user accounts, roles, subscriptions, and feature access.
-
-Document-based structure is used for efficient querying and scalability.
-
-Token data and plan metadata are also saved here.
+🌍 Internationalization (i18n) – Multilingual Support
+   This SaaS platform supports multilingual content and localized routing using a robust and automated internationalization system built with Next.js App Router, MyMemory Translation API, and MongoDB.
+  1.  Built-in internationalization (i18n) using Next.js App Router.
+  2.  Product content is auto-translated using MyMemory API.
+  3.  Automatic translation of product content via MyMemory API
+  4.  Supported Languages: English (default), French, German.
+  5.  Admin enters product content in English; translations in fr and de are generated and stored in MongoDB.
+  6.  Users can choose their preferred language, which is saved in their user profile (MongoDB).
+   Language preference is auto-applied on login via cookie and database sync.
+   User language preference saved in cookies and database
+   Languages:--
+   English (default )  
+   French
+   German
+   Product content auto-translated and stored per language
+   Language preferences stored in the database
+   Reference: Next.js Internationalization Guide
 
 
-## 🔧 Setup Instructions
+   🧩 Multilingual Implementation Steps
+   1. Dynamic Locale Routing
+   2.  All routes are structured using a dynamic [lang] segment, e.g.:
+   /en/products
+   /fr/products
+   /de/products
 
-Follow the steps below to run the project locally:
+   The application uses middleware.ts to detect and redirect based on:
+    Translation Files (JSON-based)
+    src/lib/dictionary/en.json
+    src/lib/dictionary/fr.json
+    src/lib/dictionary/de.json
+    
+    Keys are extracted using i18next-parser:
+    npm run extract:i18n
 
-## 1. Install Dependencies
-
-Install all required packages using npm:
-
-```bash
-npm install
-
-This will install all dependencies listed in package.json, including:
-. Next.js
-. Stripe
-. Mongoose
-. JSON Web Token (JWT)
-and other necessary packages
-
-## 2. 🔐 Set Up Environment Variables
-
-1. Copy the example environment file to a new `.env.local` file:
-
-```bash
-cp .env.example .env.local
-
-2. Open .env.local and replace the placeholder values with your actual credentials:
-
-# MongoDB connection string
-MONGO_URL=mongodb+srv://your-mongo-db-url
-
-# JWT secret key
-JWT_SECRET=your_jwt_secret
-
-# Stripe API keys
-PAY_SECRET=sk_test_your_stripe_secret_key
-STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_publishable_key
-
-# Base URL for local development
-NEXT_PUBLIC_BASE_URL=http://localhost:3000
-
-##3. Run the Development Server
-   Start the development server using:
-  npm run dev
+    Using Translations in Components
+    const t = useTranslations();
+    ("homepage.description");
+    
+   Auto Translation via MyMemory API
+   Products are stored in MongoDB in the following structure:
+   {
+  name: {
+    en: "iPhone",
+    fr: "iPhone",
+    de: "iPhone"
+  },
+  description: {
+    en: "A smartphone by Apple.",
+    fr: "Un smartphone d'Apple.",
+    de: "Ein Smartphone von Apple."
+  }
+}
+ Admin enters content in English; backend auto-translates to other languages during product creation.
 
 
+🛂 Social Authentication
+   Login via Google, Facebook, and GitHub using NextAuth.js.
+   OAuth users are assigned roles and tokens just like traditional logins.
+   Secure flow combines OAuth with custom JWT for role and organization enforcement. 
+
+🔗 OAuth Login Integration
+    Supports login via:
+    Google
+    Facebook
+    GitHub
+    Integrated with NextAuth and custom JWT logic   
+
+⚙️ Technologies Used :-
+  1.Frontend: Next.js (App Router)
+  2.Backend: Next.js API Routes
+  3.Database: MongoDB (Mongoose ODM)
+  4.Auth: JWT, NextAuth (OAuth)
+  5.Payments: Stripe
+  6.SMTP: Nodemailer for email invites
+  7.Roles: Admin, Staff, User
+  8.Multi-Tenancy: Subdomain routing via Ubuntu’s virtual domain setup
+
+
+  🛠️ Setup Instructions
+  1. Clone the Repository
+     git clone https://github.com/your-username/ecommerce-saas.git
+     cd ecommerce-saas
+  2. Install Dependencies
+     npm install
+  3. Configure Environment Variables
+     cp .env.example .env.local
+     Fill in your credentials in .env.local:
+     # MongoDB
+     MONGO_URL=mongodb+srv://your-mongo-url
+
+     # JWT     
+      JWT_SECRET=your_jwt_secret
+
+     # Stripe     
+      PAY_SECRET=sk_test_your_secret_key
+      STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_publishable_key
+
+     # App URL     
+      NEXT_PUBLIC_BASE_URL=http://localhost:3000
+
+     # Google OAuth     
+      GOOGLE_CLIENT_ID=your_google_client_id
+      GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+     # Facebook OAuth     
+      FACEBOOK_CLIENT_ID=your_facebook_client_id
+      FACEBOOK_CLIENT_SECRET=your_facebook_client_secret
+      
+     # GitHub OAuth
+      GITHUB_CLIENT_ID=your_github_client_id
+      GITHUB_CLIENT_SECRET=your_github_client_secret
+
+     # NextAuth
+      NEXTAUTH_SECRET=your_nextauth_secret
+      NEXTAUTH_URL=http://localhost:3000
+
+4. Run Development Server
+   npm run dev
