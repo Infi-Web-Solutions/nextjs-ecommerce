@@ -1,14 +1,15 @@
 "use client";
 import DataTableWrapper from "../../sharedcomponent/datatable/Table";
-
+import { useParams } from "next/navigation";
 export default function UserOrderTable({ orders }) {
+  const { lang } = useParams();
   const columns = [
     {
       name: "Image",
       cell: row => (
         <img
           src={`/uploads/${row.productId?.image}`}
-          alt={row.productId?.name}
+          alt={row.productId?.name?.[lang] || row.productId?.name?.en}
           style={{
             width: "60px",
             height: "60px",
@@ -18,7 +19,11 @@ export default function UserOrderTable({ orders }) {
         />
       ),
     },
-    { name: "Product", selector: row => row.productId?.name, sortable: true },
+    {
+    name: "Product",
+    selector: row => row.productId?.name?.[lang] || row.productId?.name?.en,
+    sortable: true,
+  },
     { name: "Price", selector: row => `₹${row.price}` },
     { name: "Quantity", selector: row => row.quantity },
     {
@@ -44,6 +49,7 @@ export default function UserOrderTable({ orders }) {
       title="Your Orders"
       columns={columns}
       data={orders}
+      lang={lang}
     />
   );
 }

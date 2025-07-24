@@ -27,7 +27,7 @@ export async function POST(req) {
     const session = event.data.object;
     const subscriptionId = session.subscription;
 
-
+ 
     try {
 
       const subscription = await stripe.subscriptions.retrieve(subscriptionId, {

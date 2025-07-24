@@ -1,33 +1,38 @@
+'use client';
+
 import DataTableWrapper from "../../sharedcomponent/datatable/Table";
 import { useRouter } from "next/navigation";
-import { useState ,useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export default function ProductTable({ product }) {
   const router = useRouter();
-
   const [permissions, setPermissions] = useState([]);
+
+  const currentLang = "en"; // Hardcoded for admin-only English
 
   useEffect(() => {
     fetch("/api/userpermission")
-      .then(res => res.json())
-      .then(data => setPermissions(data.permissions || []))
-      .catch(err => console.error(err));
+      .then((res) => res.json())
+      .then((data) => setPermissions(data.permissions || []))
+      .catch((err) => console.error(err));
   }, []);
 
+  useEffect(() => {
+    console.log("Product Data in Table:", product);
+  }, [product]);
 
-
-   const baseColumns = [
+  const baseColumns = [
     {
       name: "Product Category",
-      selector: row => row.category,
+      selector: (row) => row.category || "N/A",
       sortable: true,
     },
     {
       name: "Image",
-      cell: row => (
+      cell: (row) => (
         <img
           src={`/uploads/${row.image}`}
-          alt={row.name}
+          alt={row.name?.[currentLang] || "Image"}
           style={{
             width: "60px",
             height: "60px",
@@ -37,18 +42,29 @@ export default function ProductTable({ product }) {
         />
       ),
     },
-    { name: "Name", selector: row => row.name },
-    { name: "Price", selector: row => `₹${row.price}` },
-    { name: "Description", selector: row => row.description },
+    {
+      name: "Name",
+      selector: (row) => row.name?.[currentLang] || row.name?.en || "N/A",
+      sortable: true,
+    },
+    {
+      name: "Price",
+      selector: (row) => `₹${row.price}`,
+    },
+    {
+      name: "Description",
+      selector: (row) => row.description?.[currentLang] || row.description?.en || "N/A",
+    },
   ];
 
-  //  Conditionally include "Action" column if permission exists
-  const hasActionPermission = permissions.includes("product_update_product") || permissions.includes("product_delete");
+  const hasActionPermission =
+    permissions.includes("product_update_product") ||
+    permissions.includes("product_delete");
 
   if (hasActionPermission) {
     baseColumns.push({
       name: "Action",
-      cell: row => (
+      cell: (row) => (
         <div className="d-flex gap-2">
           {permissions.includes("product_update_product") && (
             <button
@@ -58,15 +74,6 @@ export default function ProductTable({ product }) {
               Update
             </button>
           )}
-          {/* Uncomment if delete permission added in future */}
-          {/* {permissions.includes("product_delete") && (
-            <button
-              className="btn btn-sm btn-danger"
-              onClick={() => handleDelete(row._id)}
-            >
-              Delete
-            </button>
-          )} */}
         </div>
       ),
     });

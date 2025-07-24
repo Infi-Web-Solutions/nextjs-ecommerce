@@ -1,8 +1,16 @@
+
+"use client";
+import { useOrganization } from "@/context/OrganizationContext";
+
 export default function DashboardPage() {
+  const { organization, loading } = useOrganization();
+
+  if (loading) return <p>Loading organization...</p>;
+
   return (
     <div>
       <h1>Dashboard</h1>
-      <p>Welcome to the admin dashboard!</p>
+      <p>Organization: {organization?.name || "Unknown"}</p>
     </div>
   );
 }

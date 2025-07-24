@@ -1,40 +1,36 @@
 "use client";
+
 import Link from "next/link";
 import "./navbar.css";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
+import { useTranslations } from '@/lib/TranslationsProvider';
+import { FaCog } from "react-icons/fa"; // Icon for settings
+
+const languages = [
+  { code: "en", label: "English" },
+  { code: "fr", label: "Français" },
+  { code: "de", label: "Deutsch" },
+  { code: "es", label: "Español" },  
+  { code: "hi", label: "हिन्दी" }     
+];
+
+const orgSlug = typeof window !== "undefined" ? window.location.hostname.split(".")[0] : "";
 
 export default function Navbar() {
   const router = useRouter();
+  const pathname = usePathname();
+  const t = useTranslations();
   const [features, setFeatures] = useState([]);
+  const [currentLang, setCurrentLang] = useState("en");
 
-//   useEffect(() => {
-//   async function fetchPlan() {
-//     try {
-//       const userId = localStorage.getItem("userId");
-//       console.log("userId from localStorage:", userId); 
+  useEffect(() => {
+    const langMatch = pathname.match(/^\/(en|fr|de)/);
+    if (langMatch) setCurrentLang(langMatch[1]);
+  }, [pathname]);
 
-//       const res = await fetch("/api/plans", {
-//         headers: {
-//           "user-id": userId,
-//         },
-//       });
-
-//       const result = await res.json();
-//       if (result.success) {
-//         setFeatures(result.data?.features || []);
-//       } else {
-//         console.error("API Error:", result.error);
-//       }
-//     } catch (err) {
-//       console.error("Failed to fetch plan:", err);
-//     }
-//   }
-
-//   fetchPlan();
-// }, []);
-
+  const selectedLangLabel = languages.find(l => l.code === currentLang)?.label || "English";
 
   function hasFeature(name) {
     return features.some((f) => f.name === name && f.enabled);
@@ -43,9 +39,9 @@ export default function Navbar() {
   const handleUpgradeAlert = () => {
     Swal.fire({
       icon: "info",
-      title: "Upgrade Required",
-      text: "This feature is available only on higher plans. Please upgrade.",
-      confirmButtonText: "Upgrade Now",
+      title: t("alerts.upgradeTitle"),
+      text: t("alerts.upgradeText"),
+      confirmButtonText: t("alerts.upgradeButton"),
     }).then((result) => {
       if (result.isConfirmed) {
         router.push("/user/plans");
@@ -53,105 +49,147 @@ export default function Navbar() {
     });
   };
 
-  async function handleLogout() {
+  const handleLogout = async () => {
     const confirm = await Swal.fire({
-      title: "Are you sure?",
-      text: "You will be logged out!",
+      title: t("alerts.logoutConfirmTitle"),
+      text: t("alerts.logoutConfirmText"),
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes, logout",
-      cancelButtonText: "Cancel",
+      confirmButtonText: t("alerts.logoutConfirmYes"),
+      cancelButtonText: t("alerts.logoutConfirmCancel"),
     });
 
     if (!confirm.isConfirmed) return;
 
     try {
-      const res = await fetch("/api/auth/logout", {
-        method: "POST",
-      });
+      const res = await fetch("/api/auth/logout", { method: "POST" });
 
       if (res.ok) {
         await Swal.fire({
           icon: "success",
-          title: "Logged out",
-          text: "You have been successfully logged out.",
+          title: t("alerts.logoutSuccessTitle"),
+          text: t("alerts.logoutSuccessText"),
           timer: 1500,
           showConfirmButton: false,
         });
         router.push("/auth/login");
       } else {
-        Swal.fire("Error", "Logout failed", "error");
+        Swal.fire(t("alerts.logoutErrorTitle"), t("alerts.logoutErrorText"), "error");
       }
     } catch (err) {
       console.error("Logout error:", err);
-      Swal.fire("Error", "Something went wrong", "error");
+      Swal.fire(t("alerts.logoutErrorTitle"), t("alerts.genericError"), "error");
     }
-  }
+  };
+
+  const changeLanguage = (lang) => {
+    document.cookie = `lang=${lang}; path=/; max-age=31536000`;
+    const newPath = pathname.replace(/^\/(en|fr|de)/, `/${lang}`);
+    router.push(newPath);
+  };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-primary custom-navbar">
-      <div className="container">
-        <Link className="navbar-brand" href="/">ProductManager</Link>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top">
+      <div className="container-fluid px-4">
+        <Link className="navbar-brand fw-bold" href="/">
+         {orgSlug ? `${orgSlug.toUpperCase()}  ` : ""}
+        {/* {t("navbar.ProductManager")} */}
+        </Link>
+
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#mainNavbar"
+          aria-controls="mainNavbar"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav ms-auto">
+        <div className="collapse navbar-collapse justify-content-end" id="mainNavbar">
+          <ul className="navbar-nav align-items-center gap-2">
             <li className="nav-item">
-              <Link className="nav-link" href="/">Home</Link>
+              <Link className="nav-link" href="/">{t("navbar.home")}</Link>
             </li>
-
             <li className="nav-item">
-              <Link className="nav-link" href="/user/products">Products</Link>
+              <Link className="nav-link" href="/user/products">{t("navbar.products")}</Link>
             </li>
-
             <li className="nav-item">
-              <Link className="nav-link" href="/user/plans">Upgrade Plans</Link>
+              <Link className="nav-link" href="/user/plans">{t("navbar.upgradePlans")}</Link>
             </li>
-
-            {/* Document */}
-            <li className="nav-item">
+            {/* <li className="nav-item">
               {hasFeature("document") ? (
-                <Link className="nav-link" href="/user/document">Document</Link>
+                <Link className="nav-link" href="/user/document">{t("navbar.document")}</Link>
               ) : (
-                <button onClick={handleUpgradeAlert} className="nav-link btn btn-link text-white" style={{ textDecoration: "none" }}>
-                  Document
+                <button onClick={handleUpgradeAlert} className="nav-link btn btn-link text-white p-0">
+                  {t("navbar.document")}
                 </button>
               )}
             </li>
-
-            {/* Learning */}
             <li className="nav-item">
               {hasFeature("learning") ? (
-                <Link className="nav-link" href="/user/learn">Learning</Link>
+                <Link className="nav-link" href="/user/learn">{t("navbar.learning")}</Link>
               ) : (
-                <button onClick={handleUpgradeAlert} className="nav-link btn btn-link text-white" style={{ textDecoration: "none" }}>
-                  Learning
+                <button onClick={handleUpgradeAlert} className="nav-link btn btn-link text-white p-0">
+                  {t("navbar.learning")}
                 </button>
               )}
-            </li>
-
-            {/* My Orders */}
+            </li> */}
             <li className="nav-item">
               {hasFeature("my order") ? (
-                <Link className="nav-link" href="/user/orders">My Orders</Link>
+                <Link className="nav-link" href="/user/orders">{t("navbar.myOrders")}</Link>
               ) : (
-                <button onClick={handleUpgradeAlert} className="nav-link btn btn-link text-white" style={{ textDecoration: "none" }}>
-                  My Orders
+                <button onClick={handleUpgradeAlert} className="nav-link btn btn-link text-white p-0">
+                  {t("navbar.myOrders")}
                 </button>
               )}
             </li>
 
-            <li className="nav-item">
-              <Link className="nav-link" href="/auth/login">Login</Link>
+            {/* Language Dropdown */}
+            <li className="nav-item dropdown">
+              <button
+                className="nav-link dropdown-toggle btn btn-link text-white p-0"
+                id="langDropdown"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Language: {selectedLangLabel}
+              </button>
+              <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="langDropdown">
+                {languages.map(({ code, label }) => (
+                  <li key={code}>
+                    <button
+                      className={`dropdown-item ${currentLang === code ? "bg-dark text-white" : ""}`}
+                      onClick={() => changeLanguage(code)}
+                    >
+                      {label}
+                    </button>
+                  </li>
+                ))}
+              </ul>
             </li>
 
-            <li className="nav-item">
-              <button onClick={handleLogout} className="nav-link logoutbutton text-danger" type="button">
-                Logout
+            {/* Settings Dropdown with Logout */}
+            <li className="nav-item dropdown">
+              <button
+                className="nav-link dropdown-toggle btn btn-link text-white p-0 d-flex align-items-center gap-1"
+                id="settingsDropdown"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+               Settings
               </button>
+              <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="settingsDropdown">
+                <li>
+                  <button onClick={handleLogout} className="dropdown-item text-danger">
+                    {t("navbar.logout")}
+                  </button>
+                </li>
+              </ul>
             </li>
+
           </ul>
         </div>
       </div>

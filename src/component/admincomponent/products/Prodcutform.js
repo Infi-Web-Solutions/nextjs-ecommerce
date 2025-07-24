@@ -1,11 +1,14 @@
-
 "use client";
 import { useState } from "react";
 
 export default function ProductForm({ initialData = {}, onSubmit }) {
   const [form, setForm] = useState({
-    name: "",
-    description: "",
+    name: {
+      en: initialData?.name?.en || "",
+    },
+    description: {
+      en: initialData?.description?.en || "",
+    },
     price: "",
     stock: "",
     category: "",
@@ -15,10 +18,24 @@ export default function ProductForm({ initialData = {}, onSubmit }) {
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
-    setForm({
-      ...form,
-      [name]: type === "file" ? files[0] : value,
-    });
+
+    // Handle nested fields for name.en and description.en
+    if (name === "name") {
+      setForm((prev) => ({
+        ...prev,
+        name: { ...prev.name, en: value },
+      }));
+    } else if (name === "description") {
+      setForm((prev) => ({
+        ...prev,
+        description: { ...prev.description, en: value },
+      }));
+    } else {
+      setForm((prev) => ({
+        ...prev,
+        [name]: type === "file" ? files[0] : value,
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -34,7 +51,7 @@ export default function ProductForm({ initialData = {}, onSubmit }) {
           type="text"
           className="form-control"
           name="name"
-          value={form.name}
+           value={form.name.en}
           onChange={handleChange}
           required
         />
@@ -58,13 +75,13 @@ export default function ProductForm({ initialData = {}, onSubmit }) {
           className="form-control"
           name="description"
           rows="3"
-          value={form.description}
+          value={form.description.en}
           onChange={handleChange}
         />
       </div>
 
       <div className="col-md-6">
-        <label className="form-label">Stock Quantity</label>
+        <label className="form-label">Stock</label>
         <input
           type="number"
           className="form-control"
@@ -96,9 +113,9 @@ export default function ProductForm({ initialData = {}, onSubmit }) {
         {initialData?.image && (
           <img
             src={`/uploads/${initialData.image}`}
-            alt="Current"
+            alt="Product"
             className="mt-2"
-            style={{ width: "100px", height: "100px", objectFit: "cover", borderRadius: "8px" }}
+            style={{ width: 100, height: 100, objectFit: "cover", borderRadius: 8 }}
           />
         )}
       </div>

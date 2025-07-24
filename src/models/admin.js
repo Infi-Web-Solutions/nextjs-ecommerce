@@ -23,11 +23,12 @@ const userSchema = new mongoose.Schema(
             required: true,
         },
 
-        role:{
-             type: String,
-        }
+        role: {
+            type: String,
+        },
 
     },
+
     {
         timestamps: true,
     }
