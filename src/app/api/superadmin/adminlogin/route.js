@@ -2,13 +2,13 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import User from "@/models/createuser";
-import connecToDatabase from "@/lib/mongodb";
+import connectToDatabase from "@/lib/mongodb";
 import { getUserPermissions } from "@/lib/auth";
 import Organization from "../../../../models/organization";
 
 // export async function POST(req) {
 //   try {
-//     await connecToDatabase();
+//     await connectToDatabase();
 
 //     const { email, password, orgSlug} = await req.json();
 //      console.log("Login attempt:", { email, orgSlug });
@@ -87,17 +87,10 @@ import Organization from "../../../../models/organization";
 
 export async function POST(req) {
   try {
-    await connecToDatabase();
+    await connectToDatabase();
 
-    const { email, password, orgSlug } = await req.json();
-    console.log("Login attempt:", { email, orgSlug });
-
-    if (!orgSlug) {
-      return NextResponse.json(
-        { success: false, message: "Missing organization slug" },
-        { status: 400 }
-      );
-    }
+    const { email, password } = await req.json();
+    console.log("Login attempt:", { email });
 
     // ✅ Populate organizationId
     const user = await User.findOne({ email }).populate("organizationId");
@@ -121,18 +114,6 @@ export async function POST(req) {
       );
     }
 
-    // ✅ Match slug
-    if (org.slug !== orgSlug) {
-      console.log("❌ Slug mismatch:", { expected: org.slug, provided: orgSlug });
-      return NextResponse.json(
-        {
-          success: false,
-          message: `Access denied: User does not belong to organization '${orgSlug}'`,
-        },
-        { status: 403 }
-      );
-    }
-
     // ✅ Permissions and Token
     const permissions = await getUserPermissions(user.roleid);
 
@@ -141,12 +122,14 @@ export async function POST(req) {
         userId: user._id,
         roleId: user.roleid,
         organizationId: org._id,
+        organizationSlug: org.slug,
         email: user.email,
         permissions,
       },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
+
 
     console.log("✅ Login successful:", {
       email: user.email,
@@ -175,3 +158,4 @@ export async function POST(req) {
     );
   }
 }
+

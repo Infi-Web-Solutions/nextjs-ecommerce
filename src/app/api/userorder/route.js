@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 import mongoose from "mongoose";
-import connecToDatabase from "@/lib/mongodb";
+import connectToDatabase from "@/lib/mongodb";
 import Order from "@/models/orders";
 
 export async function GET(req) {
@@ -19,7 +19,7 @@ export async function GET(req) {
 
     const userId = payload.userId;
 
-    await connecToDatabase();
+    await connectToDatabase();
 
     const orders = await Order.find({
       userId: new mongoose.Types.ObjectId(userId),

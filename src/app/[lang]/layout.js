@@ -30,7 +30,7 @@ export async function generateStaticParams() {
 
 // ✅ Layout Component
 export default async function RootLayout({ children, params }) {
-  const lang = params.lang;
+  const { lang } = await params;
   const dictionary = await getDictionary(lang);
   const isRTL = ['ar', 'fa', 'he'].includes(lang); // right-to-left support
 

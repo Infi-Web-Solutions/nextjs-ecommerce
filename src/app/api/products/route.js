@@ -1,6 +1,6 @@
 // import { saveImageToUploads } from "@/lib/saveImage";
 // import Product from "@/models/product";
-// import connecToDatabase from "@/lib/mongodb";
+// import connectToDatabase from "@/lib/mongodb";
 // import { NextResponse } from "next/server";
 // import { translateText } from "../../../lib/translate"; // ✅ import your reusable translation logic
 
@@ -21,7 +21,7 @@
 //     const file = formData.get("image");
 //     const filename = file ? await saveImageToUploads(file) : null;
 
-//     await connecToDatabase();
+//     await connectToDatabase();
 
 //     const newProduct = await Product.create({
 //       name: {
@@ -50,7 +50,7 @@
 
 // app/api/products/route.js
 import { saveImageToUploads } from "@/lib/saveImage";
-import connecToDatabase from "@/lib/mongodb";
+import connectToDatabase from "@/lib/mongodb";
 import Product from "@/models/product";
 import { NextResponse } from "next/server";
 import { getUserFromToken } from "@/lib/auth";
@@ -69,7 +69,7 @@ export async function POST(req) {
     const image = formData.get("image");
 
     const user = await getUserFromToken(req);
-    await connecToDatabase();
+    await connectToDatabase();
 
     // Translate
     const name = {
@@ -105,7 +105,7 @@ export async function POST(req) {
 
 export async function GET(req) {
   try {
-    await connecToDatabase();
+    await connectToDatabase();
 
     // Step 1: Get slug from custom header
     const slug = req.headers.get("x-org-slug");

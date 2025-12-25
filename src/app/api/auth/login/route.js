@@ -2,11 +2,11 @@ import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import User from "@/models/auth";
 import Organization from "@/models/organization";
-import connecToDatabase from "@/lib/mongodb";
+import connectToDatabase from "@/lib/mongodb";
 
 export async function POST(req) {
   try {
-    await connecToDatabase();
+    await connectToDatabase();
 
     const { email, password, orgSlug } = await req.json();
 

@@ -1,13 +1,17 @@
 import mongoose from "mongoose"
 
-const connecToDatabase = async  () =>{
+const connectToDatabase = async () => {
   mongoose.set("strictPopulate", false);
-  try{
-         await mongoose.connect(process.env.Mongourl);
-         console.log("connect to maongo db")
-  }catch(err){
-    console.log("error while connecting database",err)
+  try {
+    if (!process.env.MONGO_URL) {
+      throw new Error("MONGO_URL is not defined in environment variables");
+    }
+    await mongoose.connect(process.env.MONGO_URL);
+    console.log("Connected to MongoDB");
+  } catch (err) {
+    console.error("Error while connecting to database:", err);
+    throw err; // Re-throw to handle it in the caller
   }
 }
 
-export default connecToDatabase
+export default connectToDatabase;

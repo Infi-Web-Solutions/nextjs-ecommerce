@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import ProductTable from "@/component/admincomponent/products/Producttable";
+
 import Swal from "sweetalert2";
 
 export default function AdminProductList() {
@@ -9,38 +11,8 @@ export default function AdminProductList() {
 
   useEffect(() => {
     async function fetchProducts() {
-      // Extract subdomain
-      const hostname = window.location.hostname;
-      const parts = hostname.split(".");
-
-      let slug = null;
-
-      // Handle local and production cases
-      if (hostname === "localhost" || hostname === "127.0.0.1") {
-        slug = "snapmart"; // 🔁 Change to test slug in local dev
-      } else if (parts.length >= 3) {
-        slug = parts[0]; // e.g., org.domain.com -> org
-      } else if (parts.length === 2) {
-        slug = parts[0]; // e.g., org.com -> org
-      }
-
-      console.log("Slug detected:", slug);
-
-      if (!slug) {
-        Swal.fire({
-          icon: "error",
-          title: "Organization not found",
-          text: "Could not extract organization from URL.",
-        });
-        return;
-      }
-
       try {
-        const res = await fetch("/api/products", {
-          headers: {
-            "x-org-slug": slug, 
-          },
-        });
+        const res = await fetch("/api/products");
         const data = await res.json();
 
         if (data.success) {
@@ -57,9 +29,22 @@ export default function AdminProductList() {
     fetchProducts();
   }, []);
 
+
+  const router = useRouter();
+
   return (
     <div className="container py-4">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h2>Product Management</h2>
+        <button 
+          className="btn btn-success" 
+          onClick={() => router.push("/admin/products/create")}
+        >
+          + Create Product
+        </button>
+      </div>
       <ProductTable product={product} />
     </div>
   );
+
 }

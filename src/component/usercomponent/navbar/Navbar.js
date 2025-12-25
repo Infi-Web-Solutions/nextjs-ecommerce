@@ -6,17 +6,18 @@ import { useRouter, usePathname } from "next/navigation";
 import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
 import { useTranslations } from '@/lib/TranslationsProvider';
+import { getSlugFromHostname } from "@/lib/slug";
 import { FaCog } from "react-icons/fa"; // Icon for settings
 
 const languages = [
   { code: "en", label: "English" },
   { code: "fr", label: "Français" },
   { code: "de", label: "Deutsch" },
-  { code: "es", label: "Español" },  
-  { code: "hi", label: "हिन्दी" }     
+  // { code: "es", label: "Español" },  
+  // { code: "hi", label: "हिन्दी" }     
 ];
 
-const orgSlug = typeof window !== "undefined" ? window.location.hostname.split(".")[0] : "";
+const orgSlug = typeof window !== "undefined" ? getSlugFromHostname(window.location.hostname) : "";
 
 export default function Navbar() {
   const router = useRouter();

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import connecToDatabase from "@/lib/mongodb";
+import connectToDatabase from "@/lib/mongodb";
 import Order from "../../../models/orders";
 import Product from "@/models/product";
 import { jwtVerify } from "jose";
@@ -8,7 +8,7 @@ import { getUserFromToken } from "@/lib/auth";
 
 export async function POST(req) {
   try {
-    await connecToDatabase();
+    await connectToDatabase();
 
     const user = await getUserFromToken();
     if (!user) {
@@ -59,7 +59,7 @@ export async function GET(req) {
       return NextResponse.json({ error: "Access denied" }, { status: 403 });
     }
 
-    await connecToDatabase();
+    await connectToDatabase();
 
     const orders = await Order.find().populate("productId");
 

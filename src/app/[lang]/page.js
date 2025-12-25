@@ -7,6 +7,7 @@ import ProductCard from "../../component/usercomponent/products/ProductCard";
 import BannerSlider from "../../component/usercomponent/BannerSlider";
 import { useTranslations } from "@/lib/TranslationsProvider";
 import { translateText } from '../../lib/translate';
+import { getSlugFromHostname } from "@/lib/slug";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { Poppins, Inter } from "next/font/google";
@@ -45,10 +46,11 @@ export default function UserHomePage() {
     async function fetchProducts() {
       try {
         const hostname = window.location.hostname;
-        const parts = hostname.split(".");
-        const slug = parts.length >= 2 ? parts[0] : null;
+        const slug = getSlugFromHostname(hostname);
+        console.log("Homepage Slug detected:", slug);
 
-        if (!slug || slug === "localhost") {
+
+        if (!slug) {
           Swal.fire({
             icon: "error",
             title: "Error",
@@ -129,7 +131,24 @@ export default function UserHomePage() {
           >
             {t("homepage.description")}
           </p>
-          <button>{t("homepage.button")}</button>
+         <button
+  style={{
+    padding: "12px 24px",
+    fontSize: "16px",
+    fontWeight: 600,
+    color: "#ffffff",
+    background: "linear-gradient(135deg, #4f46e5, #6366f1)",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer",
+    boxShadow: "0 6px 16px rgba(79, 70, 229, 0.35)",
+    transition: "all 0.3s ease",
+    marginTop: "10px",
+  }}
+>
+  {t("homepage.button")}
+</button>
+
         </div>
 
         <BannerSlider />
