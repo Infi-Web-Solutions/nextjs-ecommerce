@@ -21,8 +21,10 @@ export default function CreateProductPage() {
   const handleCreate = async (form) => {
     const formData = new FormData();
     console.log("Form data before submission:", form);
-    formData.append("nameEn", form.name.en || form.name); // ✅ just string
-  formData.append("descEn", form.description.en || form.description);
+    formData.append("nameEn", form.name?.en || ""); // ✅ safe extraction
+
+  formData.append("descEn", form.description?.en || "");
+
 
   if (form.price) formData.append("price", form.price);
   if (form.stock) formData.append("stock", form.stock);

@@ -6,17 +6,17 @@ import { useRouter, usePathname } from "next/navigation";
 import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
 import { useTranslations } from '@/lib/TranslationsProvider';
+import { getSlugFromHostname } from "@/lib/slug";
 import { FaCog } from "react-icons/fa"; // Icon for settings
 
 const languages = [
   { code: "en", label: "English" },
   { code: "fr", label: "Français" },
   { code: "de", label: "Deutsch" },
-  { code: "es", label: "Español" },  
-  { code: "hi", label: "हिन्दी" }     
+  // { code: "es", label: "Español" },  
+  // { code: "hi", label: "हिन्दी" }     
 ];
 
-const orgSlug = typeof window !== "undefined" ? window.location.hostname.split(".")[0] : "";
 
 export default function Navbar() {
   const router = useRouter();
@@ -24,7 +24,7 @@ export default function Navbar() {
   const t = useTranslations();
   const [features, setFeatures] = useState([]);
   const [currentLang, setCurrentLang] = useState("en");
-
+  const [orgSlug, setOrgSlug] = useState("");
   useEffect(() => {
     const langMatch = pathname.match(/^\/(en|fr|de)/);
     if (langMatch) setCurrentLang(langMatch[1]);
@@ -35,6 +35,10 @@ export default function Navbar() {
   function hasFeature(name) {
     return features.some((f) => f.name === name && f.enabled);
   }
+   useEffect(() => {
+    const slug = getSlugFromHostname(window.location.hostname);
+    setOrgSlug(slug);
+  }, []);
 
   const handleUpgradeAlert = () => {
     Swal.fire({
@@ -91,10 +95,10 @@ export default function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top">
       <div className="container-fluid px-4">
-        <Link className="navbar-brand fw-bold" href="/">
-         {orgSlug ? `${orgSlug.toUpperCase()}  ` : ""}
-        {/* {t("navbar.ProductManager")} */}
+                <Link className="navbar-brand fw-bold" href="/">
+          {orgSlug ? `${orgSlug.toUpperCase()} ` : ""}
         </Link>
+
 
         <button
           className="navbar-toggler"

@@ -54,25 +54,37 @@ export function OrganizationProvider({ children, initialOrganization = null }) {
   const [loading, setLoading] = useState(!initialOrganization);
 
   useEffect(() => {
+    console.log("OrganizationProvider: useEffect triggered", { hasOrg: !!organization });
     if (!organization) {
-      // Only fetch if not already set by SSR
       async function fetchOrg() {
         try {
+          console.log("OrganizationProvider: Fetching organization...");
           const res = await fetch("/api/superadmin/createuser");
-          const data = await res.json();
+          
+          if (res.status === 401) {
+            console.log("OrganizationProvider: User not logged in (401)");
+            setLoading(false);
+            return;
+          }
 
+          const data = await res.json();
           if (res.ok && data.success && data.user?.organization) {
+            console.log("OrganizationProvider: Organization fetched successfully", data.user.organization.name);
             setOrganization(data.user.organization);
+          } else {
+            console.log("OrganizationProvider: No organization found in response");
           }
         } catch (error) {
-          console.error("Failed to fetch organization:", error);
+          console.error("OrganizationProvider: Failed to fetch organization:", error);
         } finally {
+          console.log("OrganizationProvider: Setting loading to false");
           setLoading(false);
         }
       }
 
       fetchOrg();
     } else {
+      console.log("OrganizationProvider: Organization already present, setting loading to false");
       setLoading(false);
     }
   }, [organization]);

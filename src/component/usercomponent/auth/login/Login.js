@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from '@/lib/TranslationsProvider';
+import { getSlugFromHostname } from "@/lib/slug";
 
 export default function Login() {
   const t = useTranslations();
@@ -103,10 +104,9 @@ export default function Login() {
   e.preventDefault();
 
   const hostname = window.location.hostname;
-  const parts = hostname.split(".");
-  const slug = parts.length >= 2 ? parts[0] : null;
+  const slug = getSlugFromHostname(hostname);
 
-  if (!slug || slug === "localhost") {
+  if (!slug) {
     Swal.fire({
       icon: "error",
       title: "Error",

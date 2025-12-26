@@ -8,6 +8,7 @@ import "../../style/admin.css";
 export default function AdminLayoutClient({ children }) {
   const pathname = usePathname();
   const isLoginPage = pathname === "/admin/login";
+  console.log("AdminLayoutClient: rendering", { pathname, isLoginPage });
 
   if (isLoginPage) {
     return <>{children}</>; // No layout on login

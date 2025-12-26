@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useTranslations } from '@/lib/TranslationsProvider';
+import { getSlugFromHostname } from "@/lib/slug";
 import Swal from "sweetalert2";
 import Link from "next/link";
 
@@ -99,9 +100,8 @@ const handleSubmit = async (e) => {
   e.preventDefault();
 
   // Extract subdomain (slug) from URL
-  const hostname = window.location.hostname; // e.g. snapmart.localhost
-  const parts = hostname.split(".");
-  const slug = parts.length >= 2 ? parts[0] : null;
+  const hostname = window.location.hostname;
+  const slug = getSlugFromHostname(hostname);
 
   if (!slug) {
     Swal.fire({

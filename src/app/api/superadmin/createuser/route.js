@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import connecToDatabase from "@/lib/mongodb";
+import connectToDatabase from "@/lib/mongodb";
 import User from "@/models/createuser";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
@@ -7,7 +7,7 @@ import auth from "@/models/auth";
 import "@/models/organization";
 export async function POST(req) {
   try {
-    await connecToDatabase();
+    await connectToDatabase();
 
     const body = await req.json();
     const { name, email, contact, password, roleid } = body;
@@ -39,7 +39,7 @@ export async function POST(req) {
 
 export async function GET(req) {
   try {
-    await connecToDatabase();
+    await connectToDatabase();
 
     const token = req.cookies.get("token")?.value;
     if (!token) {

@@ -2,7 +2,9 @@
 import { useEffect, useState } from "react";
 import ProductCard from "../../../../component/usercomponent/products/ProductCard";
 import { useTranslations } from "@/lib/TranslationsProvider";
+import { getSlugFromHostname } from "@/lib/slug";
 import { Playfair_Display, Lato } from "next/font/google";
+import Swal from "sweetalert2";
 const playfair = Playfair_Display({
   subsets: ["latin"],
   weight: ["700"],
@@ -19,10 +21,11 @@ export default function UserProductPage() {
     async function fetchProducts() {
       try {
         const hostname = window.location.hostname;
-        const parts = hostname.split(".");
-        const slug = parts.length >= 2 ? parts[0] : null;
+        const slug = getSlugFromHostname(hostname);
+        console.log("UserProductPage Slug detected:", slug);
 
-        if (!slug || slug === "localhost") {
+
+        if (!slug) {
           Swal.fire({
             icon: "error",
             title: "Error",

@@ -1,164 +1,72 @@
-🛒 ECommerce SaaS Platform
-    A modern multi-tenant, multilingual SaaS eCommerce application built using Next.js, MongoDB, JWT, Stripe, and NextAuth. This project supports subdomain-based B2B multi-tenancy, role-based access control, dynamic language switching, and automated product translation using MyMemory Translation API.
+# Multi-Tenant Next.js E-commerce Platform
 
-🚀 Key Features:
-🔐 JWT Authentication:
-    Secure login system using custom JWT tokens.
-    JWT contains user ID, role, organization ID, and expiration.
-    Stored securely in cookies for each user session.
-    Token contains:
-    user ID
-    role
-    organization ID
-    Stored in secure HttpOnly cookies
+A powerful, scalable, and multi-tenant e-commerce solution built with Next.js 15, MongoDB, and Stripe. This platform allows multiple organizations to host their own stores on unique subdomains while sharing a single codebase and database.
 
-🧠 Role-Based Access Control (RBAC)
-    Three user roles: admin, staff, and user.
-    Access managed through permissions:
-    Admin: Full CRUD rights.
-    Staff: Limited rights (e.g., view/manage products).
-    User: View-only access to allowed resources.
+## 🚀 Key Features
 
-🏢 B2B Multi-Tenant System (Organization-Based) 
-    Each organization (tenant) operates on a virtual subdomain (e.g., org1.myapp.com, org2.myapp.com).
-    Data such as products, users, and settings are isolated by organizationId.
-    Middleware ensures that all access is scoped to the current organization.
-    Admins can only manage data within their organization. 
+### 1. Multi-Tenant Architecture
+*   **Subdomain-Based Routing**: Each organization (tenant) is identified by its subdomain (e.g., `trendify.localhost`, `snapmart.localhost`).
+*   **Data Isolation**: Products, orders, and users are strictly linked to their respective organizations via `organizationId`.
+*   **Tenant Management**: Organizations can be managed centrally, with unique settings, logos, and plans.
 
-📨 User Invitation System via SMTP
-   Admins can invite users (admins or staff) to join the platform by email.
-   Invitation links are sent via SMTP mail server.
-   Invitees can register, set password and name, and are then onboarded with the role assigned in the invite.
-   Secure registration flow for invited users only.
+### 2. Dynamic Internationalization (i18n)
+*   **Multi-Language Support**: Built-in support for English (`en`), French (`fr`), and German (`de`).
+*   **Database-Driven Translations**: Unlike static JSON files, translations are stored in MongoDB, allowing for real-time updates without redeploying.
+*   **Auto-Translation**: Integrated translation service that automatically translates product details into all supported languages during creation.
 
-📦 Product Management
-   Products are stored with multilingual support using translation objects.
-   Each organization manages its own product inventory.
-   Products can be created, updated, and deleted by authorized roles (admin/staff).
+### 3. Advanced Authentication & RBAC
+*   **Admin/Staff Auth**: Custom JWT-based authentication for organization staff.
+*   **Customer Auth**: Integrated with NextAuth for social logins (Google, Facebook, GitHub).
+*   **Role-Based Access Control (RBAC)**: Granular permissions system (e.g., `product_view`, `product_create`) managed via roles in the database.
 
-💳 Stripe Subscription & Payments
-   Integrated Stripe Checkout for secure payments.
-   Multiple plans (Free, Pro, Premium) with recurring billing options.
-   Stripe metadata maps features to each plan.
-   Webhook handlers update MongoDB with subscription lifecycle events (active, cancelled, etc.).
+### 4. E-commerce & Payments
+*   **Product Management**: Full CRUD for products with multi-language support and image uploads.
+*   **Stripe Integration**: Secure payment processing via Stripe Checkout with webhook support for order confirmation.
+*   **Order Management**: Tracking and managing customer orders per organization.
 
-🌍 Internationalization (i18n) – Multilingual Support
-   This SaaS platform supports multilingual content and localized routing using a robust and automated internationalization system built with Next.js App Router, MyMemory Translation API, and MongoDB.
-  1.  Built-in internationalization (i18n) using Next.js App Router.
-  2.  Product content is auto-translated using MyMemory API.
-  3.  Automatic translation of product content via MyMemory API
-  4.  Supported Languages: English (default), French, German.
-  5.  Admin enters product content in English; translations in fr and de are generated and stored in MongoDB.
-  6.  Users can choose their preferred language, which is saved in their user profile (MongoDB).
-   Language preference is auto-applied on login via cookie and database sync.
-   User language preference saved in cookies and database
-   Languages:--
-   English (default )  
-   French
-   German
-   Product content auto-translated and stored per language
-   Language preferences stored in the database
-   Reference: Next.js Internationalization Guide
+## 🛠 Tech Stack
+*   **Framework**: Next.js 15 (App Router)
+*   **Database**: MongoDB (Mongoose ODM)
+*   **Authentication**: Custom JWT & NextAuth.js
+*   **Payments**: Stripe API
+*   **Styling**: Bootstrap 5 & Custom CSS
+*   **Animations**: AOS (Animate On Scroll)
 
+## 📂 Project Structure
+*   `src/app/[lang]`: Public-facing store routes with language prefixing.
+*   `src/app/admin`: Secure dashboard for organization administrators.
+*   `src/app/api`: Backend API routes for products, translations, and payments.
+*   `src/middleware.js`: Core logic for subdomain extraction, language redirection, and security.
+*   `src/models`: Mongoose schemas for Organizations, Users, Products, and Translations.
 
-   🧩 Multilingual Implementation Steps
-   1. Dynamic Locale Routing
-   2.  All routes are structured using a dynamic [lang] segment, e.g.:
-   /en/products
-   /fr/products
-   /de/products
+## ⚙️ How Organizations Work
+1.  **Identification**: The platform detects the organization via the `Host` header (subdomain).
+2.  **Validation**: Middleware checks if the organization exists and is active.
+3.  **Context**: The `OrganizationContext` provides tenant-specific data throughout the application.
+4.  **Isolation**: All database queries are filtered by the current organization's ID.
 
-   The application uses middleware.ts to detect and redirect based on:
-    Translation Files (JSON-based)
-    src/lib/dictionary/en.json
-    src/lib/dictionary/fr.json
-    src/lib/dictionary/de.json
-    
-    Keys are extracted using i18next-parser:
-    npm run extract:i18n
+## 🚦 Getting Started
 
-    Using Translations in Components
-    const t = useTranslations();
-    ("homepage.description");
-    
-   Auto Translation via MyMemory API
-   Products are stored in MongoDB in the following structure:
-   {
-  name: {
-    en: "iPhone",
-    fr: "iPhone",
-    de: "iPhone"
-  },
-  description: {
-    en: "A smartphone by Apple.",
-    fr: "Un smartphone d'Apple.",
-    de: "Ein Smartphone von Apple."
-  }
-}
- Admin enters content in English; backend auto-translates to other languages during product creation.
+### Prerequisites
+*   Node.js 18+
+*   MongoDB instance
 
+### Installation
+1.  Clone the repository.
+2.  Install dependencies: `npm install`.
+3.  Set up environment variables in `.env` (see `.env.example`).
+4.  Seed the database:
+    *   `curl -X POST http://localhost:3001/api/translations/seed`
+    *   `curl -X POST http://localhost:3001/api/superadmin/seed`
 
-🛂 Social Authentication
-   Login via Google, Facebook, and GitHub using NextAuth.js.
-   OAuth users are assigned roles and tokens just like traditional logins.
-   Secure flow combines OAuth with custom JWT for role and organization enforcement. 
+### Local Development
+To test subdomains locally, add the following to your `/etc/hosts` file:
+```text
+127.0.0.1 trendify.localhost
+127.0.0.1 snapmart.localhost
+```
+Then run: `npm run dev` and visit `http://trendify.localhost:3001`.
 
-🔗 OAuth Login Integration
-    Supports login via:
-    Google
-    Facebook
-    GitHub
-    Integrated with NextAuth and custom JWT logic   
-
-⚙️ Technologies Used :-
-  1.Frontend: Next.js (App Router)
-  2.Backend: Next.js API Routes
-  3.Database: MongoDB (Mongoose ODM)
-  4.Auth: JWT, NextAuth (OAuth)
-  5.Payments: Stripe
-  6.SMTP: Nodemailer for email invites
-  7.Roles: Admin, Staff, User
-  8.Multi-Tenancy: Subdomain routing via Ubuntu’s virtual domain setup
-
-
-  🛠️ Setup Instructions
-  1. Clone the Repository
-     git clone https://github.com/your-username/ecommerce-saas.git
-     cd ecommerce-saas
-  2. Install Dependencies
-     npm install
-  3. Configure Environment Variables
-     cp .env.example .env.local
-     Fill in your credentials in .env.local:
-     # MongoDB
-     MONGO_URL=mongodb+srv://your-mongo-url
-
-     # JWT     
-      JWT_SECRET=your_jwt_secret
-
-     # Stripe     
-      PAY_SECRET=sk_test_your_secret_key
-      STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
-      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_publishable_key
-
-     # App URL     
-      NEXT_PUBLIC_BASE_URL=http://localhost:3000
-
-     # Google OAuth     
-      GOOGLE_CLIENT_ID=your_google_client_id
-      GOOGLE_CLIENT_SECRET=your_google_client_secret
-
-     # Facebook OAuth     
-      FACEBOOK_CLIENT_ID=your_facebook_client_id
-      FACEBOOK_CLIENT_SECRET=your_facebook_client_secret
-      
-     # GitHub OAuth
-      GITHUB_CLIENT_ID=your_github_client_id
-      GITHUB_CLIENT_SECRET=your_github_client_secret
-
-     # NextAuth
-      NEXTAUTH_SECRET=your_nextauth_secret
-      NEXTAUTH_URL=http://localhost:3000
-
-4. Run Development Server
-   npm run dev
+## 🔑 Admin Credentials (Seed Data)
+*   **Trendify**: `admin@trendify.com` / `admin123`
+*   **SnapMart**: `admin@snapmart.com` / `admin123`

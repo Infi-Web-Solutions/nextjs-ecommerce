@@ -1,12 +1,24 @@
 
+import connectToDatabase from "@/lib/mongodb";
+import Translation from "@/models/Translation";
+
 export async function getDictionary(lang) {
   console.log("Fetching dictionary for language:", lang);
-  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/translations/${lang}`);
-  const json = await res.json();
-  if (!json.success) throw new Error("Failed to fetch translations");
+  
+  try {
+    await connectToDatabase();
 
-  return json.data; // returns the flat object: { "navbar.home": "Home", ... }
+    const all = await Translation.find({}).lean();
+
+    const dictionary = {};
+    all.forEach((item) => {
+      dictionary[item.key] = item.translations?.[lang] || item.translations?.en || "";
+    });
+
+    return dictionary;
+  } catch (err) {
+    console.error("getDictionary error:", err);
+    // Fallback to empty object or throw
+    return {};
+  }
 }
-
-
-

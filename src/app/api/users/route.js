@@ -1,12 +1,12 @@
 export const runtime = 'nodejs';
 import { NextResponse } from "next/server";
-import connecToDatabase from "@/lib/mongodb";
+import connectToDatabase from "@/lib/mongodb";
 import User from "@/models/auth";
 import { parse } from "url";
 
 export async function GET(req) {
   try {
-    await connecToDatabase();
+    await connectToDatabase();
 
     // Parse query parameters from the request URL
     const { searchParams } = new URL(req.url);

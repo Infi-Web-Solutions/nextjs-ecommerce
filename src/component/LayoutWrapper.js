@@ -10,9 +10,12 @@ import Footer from "@/component/usercomponent/footer/Footer";
 export default function LayoutWrapper({ children }) {
   const pathname = usePathname();
 
-  const hideLayoutOn = ["/auth/signup", "/auth/login"];
-  const shouldHideLayout =
-    hideLayoutOn.includes(pathname) || pathname === "/admin/login";
+  // Strip locale from pathname (e.g., /en/auth/login -> /auth/login)
+  const pathWithoutLang = pathname.replace(/^\/(en|fr|de)/, "");
+
+  const hideLayoutOn = ["/auth/signup", "/auth/login", "/admin/login"];
+  const shouldHideLayout = hideLayoutOn.includes(pathWithoutLang);
+
 
   // ✅ Only import Bootstrap JS in browser
   useEffect(() => {

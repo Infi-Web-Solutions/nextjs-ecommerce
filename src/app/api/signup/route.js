@@ -1,10 +1,10 @@
 // import { NextResponse } from "next/server";
-// import connecToDatabase from "@/lib/mongodb";
+// import connectToDatabase from "@/lib/mongodb";
 // import User from "@/models/auth"; 
 
 // export async function POST(req) {
 //     try {
-//         await connecToDatabase();
+//         await connectToDatabase();
 
 //         const { name, email, contact, password } = await req.json();
 
@@ -27,13 +27,13 @@
 // }
 
 import { NextResponse } from "next/server";
-import connecToDatabase from "@/lib/mongodb";
+import connectToDatabase from "@/lib/mongodb";
 import User from "@/models/auth";
 import Organization from "@/models/organization";
 
 export async function POST(req) {
   try {
-    await connecToDatabase();
+    await connectToDatabase();
 
     const { name, email, contact, password, orgSlug } = await req.json();
     console.log("Received orgSlug:", orgSlug);

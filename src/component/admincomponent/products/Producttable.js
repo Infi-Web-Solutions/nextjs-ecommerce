@@ -4,6 +4,7 @@ import DataTableWrapper from "../../sharedcomponent/datatable/Table";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
+import Swal from "sweetalert2";
 export default function ProductTable({ product }) {
   const router = useRouter();
   const [permissions, setPermissions] = useState([]);
@@ -20,6 +21,38 @@ export default function ProductTable({ product }) {
   useEffect(() => {
     console.log("Product Data in Table:", product);
   }, [product]);
+
+  const handleDelete = async (id) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const res = await fetch(`/api/products/${id}`, {
+          method: "DELETE",
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          Swal.fire("Deleted!", "Your product has been deleted.", "success");
+          window.location.reload(); // Simple reload to refresh list
+        } else {
+          Swal.fire("Error!", data.error || "Failed to delete.", "error");
+        }
+      } catch (error) {
+        console.error("Delete error:", error);
+        Swal.fire("Error!", "Something went wrong.", "error");
+      }
+    }
+  };
+
 
   const baseColumns = [
     {
@@ -57,27 +90,27 @@ export default function ProductTable({ product }) {
     },
   ];
 
-  const hasActionPermission =
-    permissions.includes("product_update_product") ||
-    permissions.includes("product_delete");
+  // Always show action buttons for admin
+  baseColumns.push({
+    name: "Action",
+    cell: (row) => (
+      <div className="d-flex gap-2">
+        <button
+          className="btn btn-sm btn-primary"
+          onClick={() => router.push(`/admin/products/${row._id}`)}
+        >
+          Update
+        </button>
+        <button
+          className="btn btn-sm btn-danger"
+          onClick={() => handleDelete(row._id)}
+        >
+          Delete
+        </button>
+      </div>
+    ),
+  });
 
-  if (hasActionPermission) {
-    baseColumns.push({
-      name: "Action",
-      cell: (row) => (
-        <div className="d-flex gap-2">
-          {permissions.includes("product_update_product") && (
-            <button
-              className="btn btn-sm btn-primary"
-              onClick={() => router.push(`/admin/products/${row._id}`)}
-            >
-              Update
-            </button>
-          )}
-        </div>
-      ),
-    });
-  }
 
   return <DataTableWrapper title="Product List" columns={baseColumns} data={product} />;
 }
