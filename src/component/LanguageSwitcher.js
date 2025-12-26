@@ -5,7 +5,7 @@ export default function LanguageSwitcher() {
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
     document.cookie = `i18next=${lng}; path=/`;
-    location.reload();
+    location.reload(); 
   };
 
   return (
