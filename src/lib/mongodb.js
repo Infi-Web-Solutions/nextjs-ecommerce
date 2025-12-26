@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 
-const connectToDatabase = async () => {
+export const connectToDatabase = async () => {
   mongoose.set("strictPopulate", false);
   try {
     if (!process.env.MONGO_URL) {
@@ -14,5 +14,4 @@ const connectToDatabase = async () => {
   }
 }
 
-export { connectToDatabase };
 export default connectToDatabase;
