@@ -7,3 +7,5 @@ export default function SuperAdminUsersPage(){
         </div>
     )
 }
+
+SuperAdminUsersPage.displayName = "SuperAdminUsersPage";
