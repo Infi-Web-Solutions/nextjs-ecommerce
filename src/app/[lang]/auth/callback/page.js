@@ -9,7 +9,7 @@ export default function CallbackPage() {
   useEffect(() => {
 
     router.push("/api/auth/set-token");
-  }, []);
+  }, [router]);
 
   return <p>Logging in with Google...</p>;
 }
