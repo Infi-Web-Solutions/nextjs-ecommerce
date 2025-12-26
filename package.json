@@ -46,7 +46,7 @@
     "i18next-parser": "^9.3.0"
   },
   "engines": {
-  "node": "20.x"
-}
+    "node": ">=18"
+  }
 
 }
