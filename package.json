@@ -44,5 +44,9 @@
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
     "i18next-parser": "^9.3.0"
-  }
+  },
+  "engines": {
+  "node": "20.x"
+}
+
 }
