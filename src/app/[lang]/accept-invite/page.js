@@ -1,10 +1,10 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import axios from "axios";
 
-export default function AcceptInvitePage() {
+function AcceptInviteForm() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const [name, setName] = useState("");
@@ -38,5 +38,13 @@ export default function AcceptInvitePage() {
       />
       <button onClick={handleAccept}>Register</button>
     </div>
+  );
+}
+
+export default function AcceptInvitePage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AcceptInviteForm />
+    </Suspense>
   );
 }

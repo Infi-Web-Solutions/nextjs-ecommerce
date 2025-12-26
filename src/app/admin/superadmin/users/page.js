@@ -1,6 +1,6 @@
 import Createusers from "@/component/admincomponent/superadmin/CreateUsers";
 
-export default function(){
+export default function SuperAdminUsersPage(){
     return(
         <div>
            <Createusers />

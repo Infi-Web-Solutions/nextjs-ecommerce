@@ -1,6 +1,7 @@
 "use client";
 import "./footer.css";
 import { useTranslations } from '@/lib/TranslationsProvider';
+import Link from 'next/link';
 
 export default function Footer() {
   const t = useTranslations();
@@ -12,8 +13,8 @@ export default function Footer() {
           © {new Date().getFullYear()} {t("footer.copy")}
         </p>
         <p className="mb-0">
-          <a href="/privacy" className="text-white me-3">{t("footer.privacyPolicy")}</a>
-          <a href="/terms" className="text-white">{t("footer.termsOfService")}</a>
+          <Link href="/privacy" className="text-white me-3">{t("footer.privacyPolicy")}</Link>
+          <Link href="/terms" className="text-white">{t("footer.termsOfService")}</Link>
         </p>
       </div>
     </footer>
